@@ -89,8 +89,38 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    seen = set()
+    frontier = util.Stack()
+
+    start = [problem.getStartState()]
+    frontier.push([start])
+
+    # Cada neighbor node te da `[position tuple, direction, step cost]`
+
+    while not frontier.isEmpty():
+        path = frontier.pop()
+        node = path[-1]
+        pos = node[0]
+
+        if pos in seen:
+            continue
+
+        seen.add(pos)
+
+        if problem.isGoalState(pos):
+            # We want the path without the start state
+            return list(map(lambda n: n[1], path[1:]))
+
+        neighbors = problem.getSuccessors(pos)
+
+        for neighbor in neighbors:
+            n_pos = neighbor[0]
+            if n_pos not in seen:
+                this_path = path.copy()
+                this_path.append(neighbor)
+                frontier.push(this_path)
+
+    return []
 
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
